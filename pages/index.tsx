@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import Button from "../components/Button";
 
 const Home: NextPage = () => {
   return (
@@ -10,10 +11,10 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="p-5">
-        <h1 className="text-center text-2xl">Welcome to Key Race</h1>
+      <main className="p-5 text-center">
+        <h1 className="text-2xl mb-1">Welcome to Key Race</h1>
 
-        <p className="text-center">
+        <p className="mb-5">
           Key Race is a clone of{" "}
           <a
             className="underline text-blue-600 hover:text-blue-700"
@@ -25,6 +26,8 @@ const Home: NextPage = () => {
           </a>
           .
         </p>
+
+        <Button>Start a race</Button>
       </main>
     </div>
   );
