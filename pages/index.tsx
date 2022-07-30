@@ -19,6 +19,7 @@ const Home: NextPage = () => {
             className="underline text-blue-600 hover:text-blue-700"
             href="https://play.typeracer.com/"
             target="_blank"
+            rel="noreferrer"
           >
             TypeRacer
           </a>
