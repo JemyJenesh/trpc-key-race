@@ -1,10 +1,19 @@
+import { useRouter } from "next/router";
 import type { FormEvent } from "react";
 import Button from "./Button";
 import Input from "./Input";
 
 const PlayerForm = () => {
+  const router = useRouter();
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (router.pathname === "/") {
+      console.log("Create player then create a new game");
+    } else {
+      console.log("Create player then join the id game");
+    }
   };
 
   return (
