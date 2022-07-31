@@ -24,6 +24,48 @@ export const appRouter = trpc
         data: { name: input!.name },
       });
     },
+  })
+  .mutation("createGame", {
+    input: z.object({
+      playerId: z.number(),
+    }),
+    resolve: async ({ input }) => {
+      const res = await fetch(
+        "https://api.quotable.io/random?minLength=100&maxLength=200"
+      );
+      const data = await res.json();
+
+      const newGame = await prisma.game.create({
+        data: {
+          hostId: input.playerId,
+          words: data.content,
+        },
+      });
+
+      await prisma.player.update({
+        where: { id: input.playerId },
+        data: {
+          gameId: newGame.id,
+        },
+      });
+
+      return newGame;
+    },
+  })
+  .mutation("addPlayerInGame", {
+    input: z.object({
+      gameId: z.number(),
+      playerId: z.number(),
+    }),
+    resolve: async ({ input }) => {
+      const { gameId, playerId } = input;
+      return await prisma.player.update({
+        where: { id: playerId },
+        data: {
+          gameId,
+        },
+      });
+    },
   });
 
 export type AppRouter = typeof appRouter;

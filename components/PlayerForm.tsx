@@ -6,24 +6,37 @@ import Input from "./Input";
 
 const PlayerForm = () => {
   const router = useRouter();
+  const { id } = router.query;
   const [name, setName] = useState("");
 
-  const mutation = trpc.useMutation("createPlayer");
+  const { mutate: createPlayer, isLoading: isPlayerLoading } =
+    trpc.useMutation("createPlayer");
+  const { mutate: createGame, isLoading: isGameLoading } =
+    trpc.useMutation("createGame");
+  const { mutate: updateGame, isLoading: isGameUpdating } =
+    trpc.useMutation("addPlayerInGame");
+
+  const isLoading = isPlayerLoading || isGameLoading || isGameUpdating;
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    mutation.mutate({ name });
-
-    if (router.pathname === "/") {
-      console.log("Create player then create a new game");
-    } else {
-      console.log("Create player then join the id game");
-    }
+    createPlayer(
+      { name },
+      {
+        onSuccess(data) {
+          if (router.pathname === "/") {
+            createGame({ playerId: data.id });
+          } else if (id) {
+            updateGame({ gameId: +id, playerId: data.id });
+          }
+        },
+      }
+    );
   };
 
   return (
@@ -38,7 +51,9 @@ const PlayerForm = () => {
           required
         />
 
-        <Button fullWidth>Create</Button>
+        <Button disabled={isLoading} fullWidth isSpinning={isLoading}>
+          Create
+        </Button>
       </form>
     </div>
   );
